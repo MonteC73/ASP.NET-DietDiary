@@ -26,7 +26,7 @@ namespace CountingKs.Controllers
 
         protected ModelFactory TheModelFactory
         {
-            get { return _modelFactory ?? (_modelFactory = new ModelFactory(this.Request)); }
+            get { return _modelFactory ?? (_modelFactory = new ModelFactory(this.Request, TheRepository)); }
         }
     }
 }
