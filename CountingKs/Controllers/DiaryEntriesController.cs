@@ -39,7 +39,7 @@ namespace CountingKs.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, TheModelFactory.Create(result));
         }
 
-        public HttpResponseMessage Post(DateTime diaryId, [FromBody]DiaryEntryModel model)
+        public HttpResponseMessage Post(DateTime diaryId, [FromBody] DiaryEntryModel model)
         {
             try
             {
@@ -66,9 +66,64 @@ namespace CountingKs.Controllers
                 {
                     return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Could not save to the database");
                 }
-                
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);
+            }
+        }
+
+        public HttpResponseMessage Delete(DateTime diaryId, int id)
+        {
+            try
+            {
+                if (TheRepository.GetDiaryEntries(_identityService.CurrentUser, diaryId).Any(e => e.Id == id) == false)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+
+                if (TheRepository.DeleteDiaryEntry(id) && TheRepository.SaveAll())
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK);
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest);
+                }
+            }
+            catch
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "");
+            }
+        }
+
+        [HttpPut]
+        [HttpPatch]
+        public HttpResponseMessage Patch(DateTime diaryId, int id, [FromBody]DiaryEntryModel model)
+        {
+            try
+            {
+                var entity = TheRepository.GetDiaryEntry(_identityService.CurrentUser, diaryId, id);
+                if (entity == null)
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+
+                var parsedValue = TheModelFactory.Parse(model);
+                if (parsedValue == null)
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+
+                if (entity.Quantity != parsedValue.Quantity)
+                {
+                    entity.Quantity = parsedValue.Quantity;
+                    if (TheRepository.SaveAll())
+                    {
+                        return Request.CreateResponse(HttpStatusCode.OK);
+                    }
+                }
+
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+            }
+            catch (Exception ex)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);
             }
