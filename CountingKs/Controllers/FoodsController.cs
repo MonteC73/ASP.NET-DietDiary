@@ -7,6 +7,7 @@ using System.Web.Http;
 using System.Web.Http.Routing;
 using CountingKs.Data;
 using CountingKs.Data.Entities;
+using CountingKs.Filters;
 using CountingKs.Models;
 
 namespace CountingKs.Controllers
@@ -14,12 +15,13 @@ namespace CountingKs.Controllers
     
     public class FoodsController : BaseApiController
     {
+        
         public FoodsController(ICountingKsRepository repo) : base(repo)
         {
         }
 
         const int PAGE_SIZE = 50;
-
+        
         public object Get(bool includeMeasures = true, int page = 0)
         {
             IQueryable<Food> query;

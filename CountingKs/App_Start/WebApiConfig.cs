@@ -1,4 +1,5 @@
 ﻿using System.Web.Http;
+using CountingKs.Filters;
 
 namespace CountingKs
 {
@@ -43,6 +44,12 @@ namespace CountingKs
             defaults: new { controller = "diarysummary" }
             );
 
+
+#if !DEBUG
+        // Force HTTPS on entire API
+        config.Filters.Add(new RequireHttpsAttribute());
+#endif
+        
       // Uncomment the following line of code to enable query support for actions with an IQueryable or IQueryable<T> return type.
       // To avoid processing unexpected or malicious queries, use the validation settings on QueryableAttribute to validate incoming queries.
       // For more information, visit http://go.microsoft.com/fwlink/?LinkId=279712.
