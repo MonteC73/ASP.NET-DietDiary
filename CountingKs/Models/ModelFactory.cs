@@ -91,6 +91,33 @@ namespace CountingKs.Models
             }
         }
 
+        public Diary Parse(DiaryModel model)
+        {
+            try
+            {
+                var entity = new Diary();
+
+                if (!string.IsNullOrWhiteSpace(model.Url))
+                {
+                    var uri = new Uri(model.Url);
+                    entity.Id = int.Parse(uri.Segments.Last());
+                }
+
+                entity.CurrentDate = model.CurrentDate;
+
+                if (model.Entries != null)
+                {
+                    foreach (var entry in model.Entries) entity.Entries.Add(Parse(entry));
+                }
+
+                return entity;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public DiarySummaryModel CreateSummary(Diary diary)
         {
             return new DiarySummaryModel()
