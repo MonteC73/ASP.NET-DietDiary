@@ -1,5 +1,14 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http.Formatting;
+using System.Net.Http.Headers;
+using System.Web.Http;
+using System.Web.Http.Dispatcher;
 using CountingKs.Filters;
+using CountingKs.Services;
+using Newtonsoft.Json.Serialization;
+using WebApiContrib.Formatting.Jsonp;
 
 namespace CountingKs
 {
@@ -45,6 +54,15 @@ namespace CountingKs
             );
 
 
+
+        var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().FirstOrDefault();
+        jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+
+        // Add support for JSONP
+        ////var formatter = new JsonpMediaTypeFormatter(jsonFormatter); // in case callback name is taken, set new in contructor.
+        ////config.Formatters.Insert(0, formatter);
+
+
 #if !DEBUG
         // Force HTTPS on entire API
         config.Filters.Add(new RequireHttpsAttribute());
@@ -54,9 +72,6 @@ namespace CountingKs
       // To avoid processing unexpected or malicious queries, use the validation settings on QueryableAttribute to validate incoming queries.
       // For more information, visit http://go.microsoft.com/fwlink/?LinkId=279712.
       //config.EnableQuerySupport();
-
-        ////var jsonFormatter = config.Formatters.OfType<System.Net.Http.Formatting.JsonMediaTypeFormatter>().FirstOrDefault();
-        ////jsonFormatter.SerializeSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
     }
   }
 }
