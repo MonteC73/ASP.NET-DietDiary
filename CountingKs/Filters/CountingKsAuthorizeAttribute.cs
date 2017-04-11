@@ -1,15 +1,13 @@
-﻿using System;
-using System.Net;
-using System.Net.Http;
-using System.Security.Principal;
-using System.Text;
-using System.Threading;
-using System.Web;
-using System.Web.Http.Controllers;
-using System.Web.Http.Filters;
+﻿#if DEBUG
+#define DISABLE_SECURITY
+#endif
+
 using CountingKs.Data;
 using Ninject;
-using WebMatrix.WebData;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http.Controllers;
+using System.Web.Http.Filters;
 
 
 namespace CountingKs.Filters
@@ -28,6 +26,7 @@ namespace CountingKs.Filters
 
         public override void OnAuthorization(HttpActionContext actionContext)
         {
+#if !DISABLE_SECURITY
             const string APIKEYNAME = "apikey";
             const string TOKENNAME = "token";
 
@@ -87,7 +86,8 @@ namespace CountingKs.Filters
                 return;
             }
             }
-            HandleUnauthorized(actionContext);       
+            HandleUnauthorized(actionContext); 
+#endif
         }
 
         private void HandleUnauthorized(HttpActionContext actionContext)
