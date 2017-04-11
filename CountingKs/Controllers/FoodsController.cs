@@ -12,7 +12,7 @@ using CountingKs.Models;
 
 namespace CountingKs.Controllers
 {
-    
+    [CountingKsAuthorize(false)]
     public class FoodsController : BaseApiController
     {
         

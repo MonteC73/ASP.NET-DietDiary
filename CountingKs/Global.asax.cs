@@ -1,10 +1,7 @@
-﻿using System.Linq;
-using Newtonsoft.Json.Serialization;
-using System.Web.Http;
+﻿using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using WebApiContrib.Formatting.Jsonp;
 
 namespace CountingKs
 {
@@ -15,12 +12,13 @@ namespace CountingKs
   {
     protected void Application_Start()
     {
-      HttpConfiguration config = GlobalConfiguration.Configuration;
-      config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-      config.Formatters.JsonFormatter.UseDataContractJsonSerializer = false;
-      config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling =
-          Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-      config.Formatters.Remove(GlobalConfiguration.Configuration.Formatters.XmlFormatter);
+
+      ////HttpConfiguration config = GlobalConfiguration.Configuration;
+      ////config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+      ////config.Formatters.JsonFormatter.UseDataContractJsonSerializer = false;
+      ////config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling =
+      ////    Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+      ////config.Formatters.Remove(GlobalConfiguration.Configuration.Formatters.XmlFormatter);
 
       AreaRegistration.RegisterAllAreas();
 

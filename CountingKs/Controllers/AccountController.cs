@@ -76,6 +76,13 @@ namespace CountingKs.Controllers
     {
       if (ModelState.IsValid)
       {
+       
+        // WebSecurity error preventrion
+        if (!WebSecurity.Initialized)
+        {
+            WebSecurity.InitializeDatabaseConnection("DefaultConnection", "UserProfile", "UserId", "UserName", autoCreateTables: true);
+        }
+
         // Attempt to register the user
         try
         {

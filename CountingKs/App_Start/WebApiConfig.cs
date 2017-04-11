@@ -53,10 +53,22 @@ namespace CountingKs
             defaults: new { controller = "diarysummary" }
             );
 
+        config.Routes.MapHttpRoute(
+            name: "Token",
+            routeTemplate: "api/token",
+            defaults: new {controller = "diarysummary"}
+            );
 
 
-        var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().FirstOrDefault();
-        jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+
+        config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+        config.Formatters.JsonFormatter.UseDataContractJsonSerializer = false;
+        config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling =
+            Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+        config.Formatters.Remove(GlobalConfiguration.Configuration.Formatters.XmlFormatter);
+
+        //var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().FirstOrDefault();
+        //jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
         // Add support for JSONP
         ////var formatter = new JsonpMediaTypeFormatter(jsonFormatter); // in case callback name is taken, set new in contructor.
