@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Formatting;
-using System.Net.Http.Headers;
+﻿using CountingKs.Services;
+using Newtonsoft.Json.Serialization;
 using System.Web.Http;
 using System.Web.Http.Dispatcher;
-using CountingKs.Filters;
-using CountingKs.Services;
-using Newtonsoft.Json.Serialization;
-using WebApiContrib.Formatting.Jsonp;
 
 namespace CountingKs
 {
@@ -74,6 +67,8 @@ namespace CountingKs
         ////var formatter = new JsonpMediaTypeFormatter(jsonFormatter); // in case callback name is taken, set new in contructor.
         ////config.Formatters.Insert(0, formatter);
 
+        // Replace the Controller Configuration to support Versioned Routing
+        config.Services.Replace(typeof(IHttpControllerSelector), new CountingKsControllerSelector(config));
 
 #if !DEBUG
         // Force HTTPS on entire API

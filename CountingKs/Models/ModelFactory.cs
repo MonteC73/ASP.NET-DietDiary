@@ -140,7 +140,7 @@ namespace CountingKs.Models
         {
             return new MeasureV2Model()
             {
-                Url = _urlHelper.Link("Measures", new { foodid = measure.Food.Id, id = measure.Id }),
+                Url = _urlHelper.Link("Measures", new { foodid = measure.Food.Id, id = measure.Id, v = 2 }),
                 Description = measure.Description,
                 Calories = measure.Calories,
                 Carbohydrates = measure.Carbohydrates,
