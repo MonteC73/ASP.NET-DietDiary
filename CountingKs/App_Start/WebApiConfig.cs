@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
@@ -7,6 +8,7 @@ using Newtonsoft.Json.Serialization;
 using System.Web.Http;
 using System.Web.Http.Dispatcher;
 using CacheCow.Server;
+using CacheCow.Server.EntityTagStore.SqlServer;
 
 namespace CountingKs
 {
@@ -79,7 +81,9 @@ namespace CountingKs
         config.Services.Replace(typeof(IHttpControllerSelector), new CountingKsControllerSelector(config));
 
         // Configure Caching/Etag Support
-        var cacheHandler = new CachingHandler();
+        var connString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+        var etagStore = new SqlServerEntityTagStore(connString);
+        var cacheHandler = new CachingHandler(config, etagStore);
         config.MessageHandlers.Add(cacheHandler);
 
 
