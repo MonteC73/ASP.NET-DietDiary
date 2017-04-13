@@ -45,9 +45,25 @@ namespace CountingKs.Models
         {
             return new DiaryModel()
             {
-                Url = _urlHelper.Link("Diaries", new {diaryid = d.CurrentDate.ToString("yyyy-MM-dd")}),
+                //Url = _urlHelper.Link("Diaries", new {diaryid = d.CurrentDate.ToString("yyyy-MM-dd")}),
+                Links = new List<LinkModel>()
+                {
+                    CreateLink(_urlHelper.Link("Diaries", new {diaryid = d.CurrentDate.ToString("yyyy-MM-dd")}),
+                    "self")
+                },
                 CurrentDate = d.CurrentDate,
                 Entries = d.Entries.Select(e => Create(e))
+            };
+        }
+
+        public LinkModel CreateLink(string href, string rel, string method = "GET", bool isTemplated = false)
+        {
+            return new LinkModel()
+            {
+                Href = href,
+                Rel = rel,
+                Method = method,
+                IsTemplated = isTemplated
             };
         }
 
@@ -97,9 +113,10 @@ namespace CountingKs.Models
             {
                 var entity = new Diary();
 
-                if (!string.IsNullOrWhiteSpace(model.Url))
+                var selfLink = model.Links.FirstOrDefault(l => l.Rel == "self");
+                if (selfLink != null && !string.IsNullOrWhiteSpace(selfLink.Href))
                 {
-                    var uri = new Uri(model.Url);
+                    var uri = new Uri(selfLink.Href);
                     entity.Id = int.Parse(uri.Segments.Last());
                 }
 

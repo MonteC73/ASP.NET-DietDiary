@@ -9,6 +9,7 @@ using System.Web.Http;
 using System.Web.Http.Dispatcher;
 using CacheCow.Server;
 using CacheCow.Server.EntityTagStore.SqlServer;
+using CountingKs.Converters;
 
 namespace CountingKs
 {
@@ -66,6 +67,8 @@ namespace CountingKs
         config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling =
             Newtonsoft.Json.ReferenceLoopHandling.Ignore;
         config.Formatters.Remove(GlobalConfiguration.Configuration.Formatters.XmlFormatter);
+
+        config.Formatters.JsonFormatter.SerializerSettings.Converters.Add(new LinkModelConverter());
 
         var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().FirstOrDefault();
         CreateMediaTypes(jsonFormatter);
