@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.Linq;
+using System.Net.Http;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Controllers;
@@ -27,7 +28,8 @@ namespace CountingKs.Services
 
             if (controllers.TryGetValue(controllerName, out descriptor))
             {
-                var version = GetVersionFromQueryString(request);
+                //var version = GetVersionFromQueryString(request);
+                var version = GetVersionFromHeader(request);
 
                 var newName = string.Concat(controllerName, "V", version);
 
@@ -42,6 +44,21 @@ namespace CountingKs.Services
             }
 
             return null;
+        }
+
+        private string GetVersionFromHeader(HttpRequestMessage request)
+        {
+            const string HEADER_NAME = "X-CountingKs-Version";
+
+            if (request.Headers.Contains(HEADER_NAME))
+            {
+                var header = request.Headers.GetValues(HEADER_NAME).FirstOrDefault();
+                if (header != null)
+                {
+                    return header;
+                }
+            }
+            return "1";
         }
 
         private string GetVersionFromQueryString(HttpRequestMessage request)
