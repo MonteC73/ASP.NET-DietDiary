@@ -1,7 +1,12 @@
-﻿using CountingKs.Services;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http.Formatting;
+using System.Net.Http.Headers;
+using CountingKs.Services;
 using Newtonsoft.Json.Serialization;
 using System.Web.Http;
 using System.Web.Http.Dispatcher;
+using CacheCow.Server;
 
 namespace CountingKs
 {
@@ -60,6 +65,9 @@ namespace CountingKs
             Newtonsoft.Json.ReferenceLoopHandling.Ignore;
         config.Formatters.Remove(GlobalConfiguration.Configuration.Formatters.XmlFormatter);
 
+        var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().FirstOrDefault();
+        CreateMediaTypes(jsonFormatter);
+
         //var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().FirstOrDefault();
         //jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
@@ -69,6 +77,11 @@ namespace CountingKs
 
         // Replace the Controller Configuration to support Versioned Routing
         config.Services.Replace(typeof(IHttpControllerSelector), new CountingKsControllerSelector(config));
+
+        // Configure Caching/Etag Support
+        var cacheHandler = new CachingHandler();
+        config.MessageHandlers.Add(cacheHandler);
+
 
 #if !DEBUG
         // Force HTTPS on entire API
@@ -80,5 +93,22 @@ namespace CountingKs
       // For more information, visit http://go.microsoft.com/fwlink/?LinkId=279712.
       //config.EnableQuerySupport();
     }
+
+      static void CreateMediaTypes(JsonMediaTypeFormatter jsonFormatter)
+      {
+          var mediaTypes = new string[]
+          {
+              "application/vnd.countingks.food.v1+json",
+              "application/vnd.countingks.measure.v1+json",
+              "application/vnd.countingks.measure.v2+json",
+              "application/vnd.countingks.diary.v1+json",
+              "application/vnd.countingks.diaryEntry.v1+json"
+          };
+
+          foreach (var mediaType in mediaTypes)
+          {
+              jsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue(mediaType));
+          }
+      }
   }
 }
